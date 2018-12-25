@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t mpcen/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run mpcen/react-test yarn test -- --coverage
+
+after_success:
+  - docker build -t mpcen/multi-client ./client
+  - docker build -t mpcen/multi-nginx ./nginx
+  - docker build -t mpcen/multi-server ./server
+  - docker build -t mpcen/multi-worker ./worker
+  # Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push mpcen/multi-client
+  - docker push mpcen/multi-nginx
+  - docker push mpcen/multi-server
+  - docker push mpcen/multi-worker

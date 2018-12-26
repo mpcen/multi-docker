@@ -15,9 +15,9 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./server
-    volumes: # We use /app because we've specified it as our working directory inside Dockerfile.dev
-      - /app/node_modules # This means to leave the node_modules as-is
-      - ./server:/app # Look at the server directory, copy everything inside there (except node_modules) into the app/ folder OF THE CONTAINER. Anytime our app tries to access anything inside of the /app directory inside of the CONTAINER, itll get redirected to the local /server dir
+    volumes:
+      - /app/node_modules
+      - ./server:/app
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
